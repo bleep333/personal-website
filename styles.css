@@ -322,6 +322,12 @@ section {
     margin-top: 3rem;
 }
 
+.project-card-link {
+    text-decoration: none;
+    display: block;
+    color: inherit;
+}
+
 .project-card {
     background: white;
     border-radius: 15px;
@@ -363,6 +369,7 @@ section {
     color: #1f2937;
 }
 
+
 .project-description {
     color: #6b7280;
     margin-bottom: 1rem;
@@ -398,9 +405,10 @@ section {
     align-items: center;
     gap: 0.5rem;
     transition: color 0.3s ease;
+    pointer-events: none;
 }
 
-.project-link:hover {
+.project-card-link:hover .project-link {
     color: #1d4ed8;
 }
 
