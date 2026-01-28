@@ -341,7 +341,7 @@ section {
 }
 
 .project-card {
-    background: white;
+    background: #000000;
     border-radius: 15px;
     overflow: hidden;
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
@@ -356,7 +356,7 @@ section {
 
 .project-image {
     height: 200px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: transparent;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -371,6 +371,12 @@ section {
     transition: transform 0.3s ease;
     position: relative;
     z-index: 2;
+}
+
+.cleanreps-img {
+    width: 90%;
+    height: 90%;
+    object-fit: contain;
 }
 
 .project-card:hover .project-img {
@@ -396,12 +402,12 @@ section {
     font-size: 1.3rem;
     font-weight: 600;
     margin-bottom: 0.5rem;
-    color: #1f2937;
+    color: #fbbf24;
 }
 
 
 .project-description {
-    color: #6b7280;
+    color: #fbbf24;
     margin-bottom: 1rem;
     line-height: 1.6;
 }
@@ -414,8 +420,8 @@ section {
 }
 
 .tech-tag {
-    background: #e0e7ff;
-    color: #3730a3;
+    background: rgba(251, 191, 36, 0.2);
+    color: #fbbf24;
     padding: 0.25rem 0.75rem;
     border-radius: 20px;
     font-size: 0.8rem;
@@ -428,7 +434,7 @@ section {
 }
 
 .project-link {
-    color: #2563eb;
+    color: #fbbf24;
     text-decoration: none;
     font-weight: 500;
     display: flex;
@@ -439,7 +445,7 @@ section {
 }
 
 .project-card-link:hover .project-link {
-    color: #1d4ed8;
+    color: #fcd34d;
 }
 
 /* Contact Section */
