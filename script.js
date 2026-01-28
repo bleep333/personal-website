@@ -34,10 +34,10 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 window.addEventListener('scroll', () => {
     const navbar = document.querySelector('.navbar');
     if (window.scrollY > 50) {
-        navbar.style.background = 'rgba(20, 184, 166, 0.98)';
+        navbar.style.background = 'rgba(17, 24, 39, 0.98)';
         navbar.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
     } else {
-        navbar.style.background = 'rgba(20, 184, 166, 0.95)';
+        navbar.style.background = 'rgba(17, 24, 39, 0.95)';
         navbar.style.boxShadow = 'none';
     }
 });
@@ -84,6 +84,31 @@ document.addEventListener('DOMContentLoaded', () => {
     animateElements.forEach(el => {
         el.classList.add('fade-in');
         observer.observe(el);
+    });
+    
+    // Initialize active nav link on page load
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-link');
+    
+    let current = '';
+    sections.forEach(section => {
+        const sectionTop = section.offsetTop - 100;
+        const sectionHeight = section.clientHeight;
+        if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
+            current = section.getAttribute('id');
+        }
+    });
+    
+    // If no section is in view (at top of page), default to home
+    if (!current && window.scrollY < 100) {
+        current = 'home';
+    }
+    
+    navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === `#${current}` || (current === 'home' && link.getAttribute('href') === '#home')) {
+            link.classList.add('active');
+        }
     });
 });
 
@@ -276,10 +301,10 @@ const throttledScrollHandler = throttle(() => {
     // Navbar background change
     const navbar = document.querySelector('.navbar');
     if (window.scrollY > 50) {
-        navbar.style.background = 'rgba(20, 184, 166, 0.98)';
+        navbar.style.background = 'rgba(17, 24, 39, 0.98)';
         navbar.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
     } else {
-        navbar.style.background = 'rgba(20, 184, 166, 0.95)';
+        navbar.style.background = 'rgba(17, 24, 39, 0.95)';
         navbar.style.boxShadow = 'none';
     }
     
