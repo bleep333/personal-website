@@ -13,7 +13,7 @@ body {
     font-family: 'Inter', sans-serif;
     line-height: 1.6;
     color: #333;
-    background-color: #ffffff;
+    background-color: #f0fdf4;
 }
 
 .container {
@@ -27,11 +27,11 @@ body {
     position: fixed;
     top: 0;
     width: 100%;
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(20, 184, 166, 0.95);
     backdrop-filter: blur(10px);
     z-index: 1000;
     transition: all 0.3s ease;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(13, 148, 136, 0.2);
 }
 
 .nav-container {
@@ -47,13 +47,13 @@ body {
 .nav-logo a {
     font-size: 1.5rem;
     font-weight: 700;
-    color: #2563eb;
+    color: #ffffff;
     text-decoration: none;
     transition: color 0.3s ease;
 }
 
 .nav-logo a:hover {
-    color: #1d4ed8;
+    color: #f0fdf4;
 }
 
 .nav-menu {
@@ -62,7 +62,7 @@ body {
 }
 
 .nav-link {
-    color: #333;
+    color: #ffffff;
     text-decoration: none;
     font-weight: 500;
     transition: color 0.3s ease;
@@ -70,7 +70,7 @@ body {
 }
 
 .nav-link:hover {
-    color: #2563eb;
+    color: #f0fdf4;
 }
 
 .nav-link::after {
@@ -80,7 +80,7 @@ body {
     left: 0;
     width: 0;
     height: 2px;
-    background: #2563eb;
+    background: #f0fdf4;
     transition: width 0.3s ease;
 }
 
@@ -97,7 +97,7 @@ body {
 .bar {
     width: 25px;
     height: 3px;
-    background: #333;
+    background: #ffffff;
     margin: 3px 0;
     transition: 0.3s;
 }
@@ -107,8 +107,8 @@ body {
     min-height: 100vh;
     display: flex;
     align-items: center;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    background: transparent;
+    color: #333;
     position: relative;
     overflow: hidden;
 }
@@ -156,13 +156,13 @@ body {
     font-size: 1.5rem;
     font-weight: 400;
     margin-bottom: 1.5rem;
-    opacity: 0.9;
+    color: #4b5563;
 }
 
 .hero-description {
     font-size: 1.1rem;
     margin-bottom: 2rem;
-    opacity: 0.8;
+    color: #6b7280;
     line-height: 1.7;
 }
 
@@ -195,13 +195,13 @@ body {
 
 .btn-secondary {
     background: transparent;
-    color: white;
-    border: 2px solid white;
+    color: #333;
+    border: 2px solid #14b8a6;
 }
 
 .btn-secondary:hover {
-    background: white;
-    color: #2563eb;
+    background: #14b8a6;
+    color: white;
     transform: translateY(-2px);
 }
 
@@ -213,11 +213,11 @@ body {
 }
 
 .code-animation {
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(20, 184, 166, 0.1);
     padding: 2rem;
     border-radius: 10px;
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(20, 184, 166, 0.2);
 }
 
 .code-line {
@@ -352,10 +352,28 @@ section {
     overflow: hidden;
 }
 
+.project-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+    position: relative;
+    z-index: 2;
+}
+
+.project-card:hover .project-img {
+    transform: scale(1.05);
+}
+
 .project-placeholder {
     color: white;
     font-size: 3rem;
     opacity: 0.8;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
 }
 
 .project-content {
@@ -418,17 +436,18 @@ section {
 }
 
 .contact-content {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4rem;
+    display: flex;
+    justify-content: center;
     max-width: 1000px;
     margin: 0 auto;
 }
 
 .contact-info {
     display: flex;
-    flex-direction: column;
-    gap: 2rem;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    justify-content: center;
 }
 
 .contact-item {
@@ -439,6 +458,9 @@ section {
     background: white;
     border-radius: 10px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    flex: 0 0 auto;
+    min-width: 200px;
+    width: auto;
 }
 
 .contact-item i {
@@ -455,6 +477,13 @@ section {
 
 .contact-item p {
     color: #6b7280;
+    white-space: nowrap;
+}
+
+.contact-item > div {
+    flex: 1;
+    min-width: 0;
+    overflow: visible;
 }
 
 .contact-form {
@@ -559,7 +588,7 @@ section {
         left: -100%;
         top: 70px;
         flex-direction: column;
-        background-color: white;
+        background-color: rgba(20, 184, 166, 0.98);
         width: 100%;
         text-align: center;
         transition: 0.3s;
@@ -602,8 +631,17 @@ section {
     }
 
     .contact-content {
-        grid-template-columns: 1fr;
-        gap: 2rem;
+        padding: 0 1rem;
+    }
+    
+    .contact-info {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .contact-item {
+        flex: 1 1 100%;
+        max-width: 100%;
     }
 
     .footer-content {
