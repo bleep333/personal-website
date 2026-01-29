@@ -232,13 +232,13 @@ document.querySelectorAll('.project-card').forEach(card => {
         this.style.transform = 'translateY(0) scale(1)';
     });
     
-    // Make card clickable to open GitHub repo if data-github-url is set
-    const githubUrl = card.getAttribute('data-github-url');
-    if (githubUrl) {
+    // Make card clickable to open live site if data-live-url is set
+    const liveUrl = card.getAttribute('data-live-url');
+    if (liveUrl) {
         card.addEventListener('click', function(e) {
             // Don't navigate if clicking on a link inside the card
             if (!e.target.closest('.project-link')) {
-                window.open(githubUrl, '_blank', 'noopener,noreferrer');
+                window.open(liveUrl, '_blank', 'noopener,noreferrer');
             }
         });
     }
