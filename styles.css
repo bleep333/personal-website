@@ -119,10 +119,13 @@ body {
     min-height: 100vh;
     display: flex;
     align-items: center;
-    background: transparent;
-    color: #333;
     position: relative;
     overflow: hidden;
+    background:
+        radial-gradient(circle at 30% 40%, rgba(34, 197, 94, 0.15), transparent 40%),
+        radial-gradient(circle at 70% 60%, rgba(56, 189, 248, 0.12), transparent 45%),
+        #0f172a;
+    color: #e5e7eb;
 }
 
 .hero::before {
@@ -168,13 +171,13 @@ body {
     font-size: 1.5rem;
     font-weight: 400;
     margin-bottom: 1.5rem;
-    color: #4b5563;
+    color: #cbd5f5;
 }
 
 .hero-description {
     font-size: 1.1rem;
     margin-bottom: 2rem;
-    color: #6b7280;
+    color: #cbd5f5;
     line-height: 1.7;
 }
 
@@ -207,7 +210,7 @@ body {
 
 .btn-secondary {
     background: transparent;
-    color: #333;
+    color: #afafaf;
     border: 2px solid #14b8a6;
 }
 
