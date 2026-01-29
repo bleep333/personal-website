@@ -341,7 +341,7 @@ section {
 }
 
 .project-card {
-    background: #000000;
+    background: #0000009d;
     border-radius: 15px;
     overflow: hidden;
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
@@ -383,6 +383,14 @@ section {
     transform: scale(1.05);
 }
 
+.project-card:hover .project-title {
+    color: #fbbe24b4;
+}
+
+.project-card:hover .project-description {
+    color: #fbbe24ab;
+}
+
 .project-placeholder {
     color: white;
     font-size: 3rem;
@@ -402,12 +410,12 @@ section {
     font-size: 1.3rem;
     font-weight: 600;
     margin-bottom: 0.5rem;
-    color: #fbbf24;
+    color: #fbbe247e;
 }
 
 
 .project-description {
-    color: #fbbf24;
+    color: #fbbe2442;
     margin-bottom: 1rem;
     line-height: 1.6;
 }
