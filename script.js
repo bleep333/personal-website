@@ -231,7 +231,7 @@ window.addEventListener('scroll', () => {
     }
 });
 
-// Project card hover effects
+// Project card hover effects and click handling
 document.querySelectorAll('.project-card').forEach(card => {
     card.addEventListener('mouseenter', function() {
         this.style.transform = 'translateY(-10px) scale(1.02)';
@@ -239,6 +239,25 @@ document.querySelectorAll('.project-card').forEach(card => {
     
     card.addEventListener('mouseleave', function() {
         this.style.transform = 'translateY(0) scale(1)';
+    });
+    
+    // Make card clickable to open GitHub repo if data-github-url is set
+    const githubUrl = card.getAttribute('data-github-url');
+    if (githubUrl) {
+        card.addEventListener('click', function(e) {
+            // Don't navigate if clicking on a link inside the card
+            if (!e.target.closest('.project-link')) {
+                window.open(githubUrl, '_blank', 'noopener,noreferrer');
+            }
+        });
+    }
+    
+    // Prevent card link from triggering when clicking on project-links
+    const projectLinks = card.querySelectorAll('.project-links a');
+    projectLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
     });
 });
 
