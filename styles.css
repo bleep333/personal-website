@@ -358,7 +358,7 @@ section {
 }
 
 .project-image {
-    height: 200px;
+    height: 320px;
     background: transparent;
     display: flex;
     align-items: center;
@@ -371,7 +371,7 @@ section {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, opacity 0.3s ease;
     position: relative;
     z-index: 2;
 }
@@ -403,6 +403,11 @@ section {
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 1;
+    transition: opacity 0.2s ease;
+}
+
+.project-placeholder.hidden {
+    display: none;
 }
 
 .project-content {

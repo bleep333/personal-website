@@ -47,14 +47,26 @@ window.addEventListener('scroll', () => {
     const sections = document.querySelectorAll('section[id]');
     const navLinks = document.querySelectorAll('.nav-link');
     
+    // Check if user is near the bottom of the page
+    const scrollPosition = window.scrollY + window.innerHeight;
+    const documentHeight = document.documentElement.scrollHeight;
+    const threshold = 100; // pixels from bottom
+    
     let current = '';
-    sections.forEach(section => {
-        const sectionTop = section.offsetTop - 100;
-        const sectionHeight = section.clientHeight;
-        if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
-            current = section.getAttribute('id');
-        }
-    });
+    
+    // If scrolled near the bottom, highlight Contact
+    if (scrollPosition >= documentHeight - threshold) {
+        current = 'contact';
+    } else {
+        // Otherwise, use normal section detection
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop - 100;
+            const sectionHeight = section.clientHeight;
+            if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
+                current = section.getAttribute('id');
+            }
+        });
+    }
 
     navLinks.forEach(link => {
         link.classList.remove('active');
@@ -90,18 +102,30 @@ document.addEventListener('DOMContentLoaded', () => {
     const sections = document.querySelectorAll('section[id]');
     const navLinks = document.querySelectorAll('.nav-link');
     
-    let current = '';
-    sections.forEach(section => {
-        const sectionTop = section.offsetTop - 100;
-        const sectionHeight = section.clientHeight;
-        if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
-            current = section.getAttribute('id');
-        }
-    });
+    // Check if user is near the bottom of the page
+    const scrollPosition = window.scrollY + window.innerHeight;
+    const documentHeight = document.documentElement.scrollHeight;
+    const threshold = 100; // pixels from bottom
     
-    // If no section is in view (at top of page), default to home
-    if (!current && window.scrollY < 100) {
-        current = 'home';
+    let current = '';
+    
+    // If scrolled near the bottom, highlight Contact
+    if (scrollPosition >= documentHeight - threshold) {
+        current = 'contact';
+    } else {
+        // Otherwise, use normal section detection
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop - 100;
+            const sectionHeight = section.clientHeight;
+            if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
+                current = section.getAttribute('id');
+            }
+        });
+        
+        // If no section is in view (at top of page), default to home
+        if (!current && window.scrollY < 100) {
+            current = 'home';
+        }
     }
     
     navLinks.forEach(link => {
@@ -218,6 +242,114 @@ document.querySelectorAll('.project-card').forEach(card => {
     });
 });
 
+// Hide placeholders for all project images that exist
+document.querySelectorAll('.project-img').forEach(img => {
+    const projectImageContainer = img.closest('.project-image');
+    const placeholder = projectImageContainer ? projectImageContainer.querySelector('.project-placeholder') : null;
+    
+    // Hide placeholder if image exists and is loaded
+    const hidePlaceholder = function() {
+        if (placeholder && img.src) {
+            placeholder.classList.add('hidden');
+        }
+    };
+    
+    // Show placeholder only if image fails to load
+    const showPlaceholder = function() {
+        if (placeholder && (!img.src || !img.complete || img.naturalWidth === 0)) {
+            placeholder.classList.remove('hidden');
+        }
+    };
+    
+    img.addEventListener('load', hidePlaceholder);
+    img.addEventListener('error', showPlaceholder);
+    
+    // Check on initial load
+    if (img.complete && img.naturalWidth > 0) {
+        hidePlaceholder();
+    } else if (img.src) {
+        // Image is loading, hide placeholder immediately
+        hidePlaceholder();
+    }
+});
+
+// Project image hover swap functionality
+document.querySelectorAll('.project-img[data-project]').forEach(img => {
+    const projectName = img.getAttribute('data-project');
+    const originalSrc = img.src;
+    const hoverSrc = `images/${projectName}-hover.jpg`;
+    
+    // Find the placeholder and project card
+    const projectImageContainer = img.closest('.project-image');
+    const placeholder = projectImageContainer ? projectImageContainer.querySelector('.project-placeholder') : null;
+    const projectCard = img.closest('.project-card');
+    
+    // Hide placeholder if image exists and is loaded
+    img.addEventListener('load', function() {
+        if (placeholder && img.src && img.complete && img.naturalWidth > 0) {
+            placeholder.classList.add('hidden');
+        }
+    });
+    
+    // Check on initial load
+    if (img.complete && img.naturalWidth > 0 && placeholder) {
+        placeholder.classList.add('hidden');
+    }
+    
+    // Preload hover image to check if it exists
+    const hoverImage = new Image();
+    let hoverImageExists = false;
+    
+    hoverImage.onload = function() {
+        hoverImageExists = true;
+    };
+    
+    hoverImage.onerror = function() {
+        hoverImageExists = false;
+    };
+    
+    hoverImage.src = hoverSrc;
+    
+    if (projectCard) {
+        projectCard.addEventListener('mouseenter', function() {
+            // Check if hover image exists and is loaded
+            if (hoverImageExists || (hoverImage.complete && hoverImage.naturalWidth > 0)) {
+                // Ensure placeholder stays hidden during swap
+                if (placeholder) {
+                    placeholder.classList.add('hidden');
+                }
+                // Fade out, swap image, fade in
+                img.style.opacity = '0';
+                setTimeout(() => {
+                    img.src = hoverSrc;
+                    // Ensure placeholder stays hidden after swap
+                    if (placeholder) {
+                        placeholder.classList.add('hidden');
+                    }
+                    img.style.opacity = '1';
+                }, 150);
+            }
+        });
+        
+        projectCard.addEventListener('mouseleave', function() {
+            // Ensure placeholder stays hidden during swap
+            if (placeholder) {
+                placeholder.classList.add('hidden');
+            }
+            // Fade out, swap back, fade in
+            img.style.opacity = '0';
+            setTimeout(() => {
+                img.src = originalSrc;
+                // Ensure placeholder stays hidden after swap
+                if (placeholder) {
+                    placeholder.classList.add('hidden');
+                }
+                img.style.opacity = '1';
+            }, 150);
+        });
+    }
+});
+
 // Skill item animation on hover
 document.querySelectorAll('.skill-item').forEach(item => {
     item.addEventListener('mouseenter', function() {
@@ -312,14 +444,26 @@ const throttledScrollHandler = throttle(() => {
     const sections = document.querySelectorAll('section[id]');
     const navLinks = document.querySelectorAll('.nav-link');
     
+    // Check if user is near the bottom of the page
+    const scrollPosition = window.scrollY + window.innerHeight;
+    const documentHeight = document.documentElement.scrollHeight;
+    const threshold = 100; // pixels from bottom
+    
     let current = '';
-    sections.forEach(section => {
-        const sectionTop = section.offsetTop - 100;
-        const sectionHeight = section.clientHeight;
-        if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
-            current = section.getAttribute('id');
-        }
-    });
+    
+    // If scrolled near the bottom, highlight Contact
+    if (scrollPosition >= documentHeight - threshold) {
+        current = 'contact';
+    } else {
+        // Otherwise, use normal section detection
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop - 100;
+            const sectionHeight = section.clientHeight;
+            if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
+                current = section.getAttribute('id');
+            }
+        });
+    }
 
     navLinks.forEach(link => {
         link.classList.remove('active');
