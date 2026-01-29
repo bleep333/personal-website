@@ -42,31 +42,48 @@ window.addEventListener('scroll', () => {
     }
 });
 
-// Active navigation link highlighting
-window.addEventListener('scroll', () => {
-    const sections = document.querySelectorAll('section[id]');
-    const navLinks = document.querySelectorAll('.nav-link');
-    
-    // Check if user is near the bottom of the page
+// Function to calculate which section should be highlighted
+function getActiveSection() {
+    // Check if scrolled all the way down
     const scrollPosition = window.scrollY + window.innerHeight;
     const documentHeight = document.documentElement.scrollHeight;
-    const threshold = 100; // pixels from bottom
+    const threshold = 50; // pixels from bottom
     
-    let current = '';
-    
-    // If scrolled near the bottom, highlight Contact
     if (scrollPosition >= documentHeight - threshold) {
-        current = 'contact';
-    } else {
-        // Otherwise, use normal section detection
-        sections.forEach(section => {
-            const sectionTop = section.offsetTop - 100;
-            const sectionHeight = section.clientHeight;
-            if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
-                current = section.getAttribute('id');
-            }
-        });
+        return 'contact';
     }
+    
+    // Otherwise, find the section that takes up the majority of the screen
+    const sections = document.querySelectorAll('section[id]');
+    const viewportTop = window.scrollY;
+    const viewportBottom = window.scrollY + window.innerHeight;
+    
+    let maxVisibleArea = 0;
+    let activeSectionId = '';
+    
+    sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        const sectionBottom = sectionTop + section.offsetHeight;
+        
+        // Calculate visible area of this section
+        const visibleTop = Math.max(viewportTop, sectionTop);
+        const visibleBottom = Math.min(viewportBottom, sectionBottom);
+        const visibleHeight = Math.max(0, visibleBottom - visibleTop);
+        
+        // Track section with most visible area
+        if (visibleHeight > maxVisibleArea) {
+            maxVisibleArea = visibleHeight;
+            activeSectionId = section.getAttribute('id');
+        }
+    });
+    
+    return activeSectionId || 'home';
+}
+
+// Active navigation link highlighting
+window.addEventListener('scroll', () => {
+    const navLinks = document.querySelectorAll('.nav-link');
+    const current = getActiveSection();
 
     navLinks.forEach(link => {
         link.classList.remove('active');
@@ -99,34 +116,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     // Initialize active nav link on page load
-    const sections = document.querySelectorAll('section[id]');
     const navLinks = document.querySelectorAll('.nav-link');
-    
-    // Check if user is near the bottom of the page
-    const scrollPosition = window.scrollY + window.innerHeight;
-    const documentHeight = document.documentElement.scrollHeight;
-    const threshold = 100; // pixels from bottom
-    
-    let current = '';
-    
-    // If scrolled near the bottom, highlight Contact
-    if (scrollPosition >= documentHeight - threshold) {
-        current = 'contact';
-    } else {
-        // Otherwise, use normal section detection
-        sections.forEach(section => {
-            const sectionTop = section.offsetTop - 100;
-            const sectionHeight = section.clientHeight;
-            if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
-                current = section.getAttribute('id');
-            }
-        });
-        
-        // If no section is in view (at top of page), default to home
-        if (!current && window.scrollY < 100) {
-            current = 'home';
-        }
-    }
+    const current = getActiveSection();
     
     navLinks.forEach(link => {
         link.classList.remove('active');
@@ -460,29 +451,8 @@ const throttledScrollHandler = throttle(() => {
     }
     
     // Active navigation link highlighting
-    const sections = document.querySelectorAll('section[id]');
     const navLinks = document.querySelectorAll('.nav-link');
-    
-    // Check if user is near the bottom of the page
-    const scrollPosition = window.scrollY + window.innerHeight;
-    const documentHeight = document.documentElement.scrollHeight;
-    const threshold = 100; // pixels from bottom
-    
-    let current = '';
-    
-    // If scrolled near the bottom, highlight Contact
-    if (scrollPosition >= documentHeight - threshold) {
-        current = 'contact';
-    } else {
-        // Otherwise, use normal section detection
-        sections.forEach(section => {
-            const sectionTop = section.offsetTop - 100;
-            const sectionHeight = section.clientHeight;
-            if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
-                current = section.getAttribute('id');
-            }
-        });
-    }
+    const current = getActiveSection();
 
     navLinks.forEach(link => {
         link.classList.remove('active');
