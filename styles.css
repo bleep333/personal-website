@@ -454,6 +454,91 @@ section {
     display: none;
 }
 
+/* Mobile-only image indicators */
+.image-carousel-dots {
+    display: none;
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.image-carousel-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.4);
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.image-carousel-dot.active {
+    width: 8px;
+    height: 8px;
+    background: rgba(251, 191, 36, 0.9);
+    box-shadow: 0 0 8px rgba(251, 191, 36, 0.6);
+}
+
+.image-switch-hint {
+    display: none;
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    pointer-events: none;
+    backdrop-filter: blur(10px);
+    white-space: nowrap;
+    opacity: 1;
+    transition: opacity 0.5s ease;
+}
+
+.image-switch-hint.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Show mobile indicators only on touch devices */
+@media (hover: none) and (pointer: coarse) {
+    .image-carousel-dots {
+        display: flex;
+    }
+    
+    .image-switch-hint {
+        display: block;
+    }
+}
+
+/* Also show on smaller screens (mobile devices) */
+@media (max-width: 768px) {
+    .image-carousel-dots {
+        display: flex;
+    }
+    
+    .image-switch-hint {
+        display: block;
+    }
+}
+
+/* Hide on desktop with hover capability */
+@media (hover: hover) and (pointer: fine) {
+    .image-carousel-dots,
+    .image-switch-hint {
+        display: none !important;
+    }
+}
+
 .project-content {
     padding: 1.5rem;
     display: flex;

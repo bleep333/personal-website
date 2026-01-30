@@ -304,6 +304,11 @@ document.querySelectorAll('.project-img[data-project]').forEach(img => {
     // Track current image state (false = original, true = hover)
     let isHoverImage = false;
     
+    // Mobile UI elements
+    let carouselDots = null;
+    let hintOverlay = null;
+    let hintDismissed = false;
+    
     // Hide placeholder if image exists and is loaded
     img.addEventListener('load', function() {
         if (placeholder && img.src && img.complete && img.naturalWidth > 0) {
@@ -322,6 +327,10 @@ document.querySelectorAll('.project-img[data-project]').forEach(img => {
     
     hoverImage.onload = function() {
         hoverImageExists = true;
+        // Initialize mobile UI if hover image exists and on touch device
+        if (isTouchDevice && projectImageContainer) {
+            initializeMobileUI();
+        }
     };
     
     hoverImage.onerror = function() {
@@ -329,6 +338,82 @@ document.querySelectorAll('.project-img[data-project]').forEach(img => {
     };
     
     hoverImage.src = hoverSrc;
+    
+    // Check if hover image is already loaded
+    if (hoverImage.complete && hoverImage.naturalWidth > 0) {
+        hoverImageExists = true;
+        if (isTouchDevice && projectImageContainer) {
+            initializeMobileUI();
+        }
+    }
+    
+    // Initialize mobile UI elements (dots and hint)
+    function initializeMobileUI() {
+        if (!hoverImageExists || !projectImageContainer) return;
+        
+        // Check if hint was already dismissed in this session
+        const hintKey = `imageHintDismissed_${projectName}`;
+        hintDismissed = sessionStorage.getItem(hintKey) === 'true';
+        
+        // Create carousel dots
+        if (!carouselDots) {
+            carouselDots = document.createElement('div');
+            carouselDots.className = 'image-carousel-dots';
+            
+            // Create two dots
+            const dot1 = document.createElement('div');
+            dot1.className = 'image-carousel-dot active';
+            dot1.setAttribute('data-index', '0');
+            
+            const dot2 = document.createElement('div');
+            dot2.className = 'image-carousel-dot';
+            dot2.setAttribute('data-index', '1');
+            
+            carouselDots.appendChild(dot1);
+            carouselDots.appendChild(dot2);
+            projectImageContainer.appendChild(carouselDots);
+            
+            // Update dots to reflect initial state
+            updateDots();
+        }
+        
+        // Create hint overlay (only if not dismissed)
+        if (!hintOverlay && !hintDismissed) {
+            hintOverlay = document.createElement('div');
+            hintOverlay.className = 'image-switch-hint';
+            hintOverlay.textContent = 'Tap or swipe';
+            projectImageContainer.appendChild(hintOverlay);
+        }
+    }
+    
+    // Update carousel dots to reflect current image
+    function updateDots() {
+        if (!carouselDots) return;
+        const dots = carouselDots.querySelectorAll('.image-carousel-dot');
+        dots.forEach((dot, index) => {
+            if (index === (isHoverImage ? 1 : 0)) {
+                dot.classList.add('active');
+            } else {
+                dot.classList.remove('active');
+            }
+        });
+    }
+    
+    // Hide hint after first successful switch
+    function dismissHint() {
+        if (hintOverlay && !hintDismissed) {
+            hintOverlay.classList.add('hidden');
+            const hintKey = `imageHintDismissed_${projectName}`;
+            sessionStorage.setItem(hintKey, 'true');
+            hintDismissed = true;
+            // Remove from DOM after fade out
+            setTimeout(() => {
+                if (hintOverlay && hintOverlay.parentNode) {
+                    hintOverlay.remove();
+                }
+            }, 500);
+        }
+    }
     
     // Function to swap to hover image
     const showHoverImage = function() {
@@ -345,6 +430,8 @@ document.querySelectorAll('.project-img[data-project]').forEach(img => {
                     }
                     img.style.opacity = '1';
                     isHoverImage = true;
+                    updateDots();
+                    dismissHint();
                 }, 150);
             }
         }
@@ -364,12 +451,32 @@ document.querySelectorAll('.project-img[data-project]').forEach(img => {
                 }
                 img.style.opacity = '1';
                 isHoverImage = false;
+                updateDots();
+                dismissHint();
             }, 150);
         }
     };
     
     // Function to toggle between images
     const toggleImage = function() {
+        if (isHoverImage) {
+            showOriginalImage();
+        } else {
+            showHoverImage();
+        }
+    };
+    
+    // Function to switch to next image (for swipe)
+    const switchToNext = function() {
+        if (isHoverImage) {
+            showOriginalImage();
+        } else {
+            showHoverImage();
+        }
+    };
+    
+    // Function to switch to previous image (for swipe)
+    const switchToPrev = function() {
         if (isHoverImage) {
             showOriginalImage();
         } else {
@@ -391,28 +498,58 @@ document.querySelectorAll('.project-img[data-project]').forEach(img => {
             }
         });
         
-        // Mobile touch behavior - toggle image on tap
+        // Mobile touch behavior - toggle image on tap, swipe for navigation
         if (isTouchDevice && projectImageContainer) {
             let touchStartTime = 0;
             let touchStartX = 0;
             let touchStartY = 0;
+            let touchStartTarget = null;
+            let swipeThreshold = 50; // Minimum distance for swipe
             
             projectImageContainer.addEventListener('touchstart', function(e) {
                 touchStartTime = Date.now();
                 touchStartX = e.touches[0].clientX;
                 touchStartY = e.touches[0].clientY;
+                touchStartTarget = e.target;
             }, { passive: true });
+            
+            projectImageContainer.addEventListener('touchmove', function(e) {
+                // Prevent default scrolling if user is swiping horizontally
+                const currentX = e.touches[0].clientX;
+                const currentY = e.touches[0].clientY;
+                const deltaX = Math.abs(currentX - touchStartX);
+                const deltaY = Math.abs(currentY - touchStartY);
+                
+                // If horizontal swipe is more significant than vertical, prevent scroll
+                if (deltaX > deltaY && deltaX > 10) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
             
             projectImageContainer.addEventListener('touchend', function(e) {
                 const touchEndTime = Date.now();
                 const touchDuration = touchEndTime - touchStartTime;
                 const touchEndX = e.changedTouches[0].clientX;
                 const touchEndY = e.changedTouches[0].clientY;
-                const deltaX = Math.abs(touchEndX - touchStartX);
-                const deltaY = Math.abs(touchEndY - touchStartY);
+                const deltaX = touchEndX - touchStartX;
+                const deltaY = touchEndY - touchStartY;
+                const absDeltaX = Math.abs(deltaX);
+                const absDeltaY = Math.abs(deltaY);
                 
-                // Only toggle if it's a quick tap (not a swipe or long press)
-                if (touchDuration < 300 && deltaX < 10 && deltaY < 10) {
+                // Check if it's a swipe (horizontal movement > threshold and > vertical movement)
+                if (absDeltaX > swipeThreshold && absDeltaX > absDeltaY && touchDuration < 500) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    // Swipe right (positive deltaX) = next image
+                    // Swipe left (negative deltaX) = previous image
+                    if (deltaX > 0) {
+                        switchToNext();
+                    } else {
+                        switchToPrev();
+                    }
+                }
+                // Check if it's a tap (small movement, quick duration)
+                else if (touchDuration < 300 && absDeltaX < 10 && absDeltaY < 10) {
                     e.preventDefault();
                     e.stopPropagation();
                     toggleImage();
@@ -422,7 +559,7 @@ document.querySelectorAll('.project-img[data-project]').forEach(img => {
             // Also handle click for devices that support both touch and mouse
             projectImageContainer.addEventListener('click', function(e) {
                 // Only handle if it's from a touch device and not from a link
-                if (isTouchDevice && !e.target.closest('.project-link')) {
+                if (isTouchDevice && !e.target.closest('.project-link') && !e.target.closest('.image-carousel-dots')) {
                     e.preventDefault();
                     e.stopPropagation();
                     toggleImage();
