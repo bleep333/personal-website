@@ -7,6 +7,8 @@
 
 html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
+    width: 100%;
 }
 
 body {
@@ -14,12 +16,17 @@ body {
     line-height: 1.6;
     color: #333;
     background-color: #9ca3af;
+    overflow-x: hidden;
+    width: 100%;
+    position: relative;
 }
 
 .container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 20px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 /* Navigation */
@@ -674,7 +681,8 @@ section {
 
 .contact-item p {
     color: rgb(111, 180, 163);
-    white-space: nowrap;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .contact-item > div {
@@ -834,11 +842,14 @@ section {
     .contact-info {
         flex-direction: column;
         gap: 1rem;
+        width: 100%;
     }
     
     .contact-item {
         flex: 1 1 100%;
+        width: 100%;
         max-width: 100%;
+        min-width: 0;
     }
 
     .footer-content {
