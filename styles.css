@@ -847,6 +847,7 @@ section {
         gap: 1rem;
         width: 100%;
         display: flex;
+        align-items: stretch;
     }
     
     .contact-item {
@@ -855,6 +856,23 @@ section {
         min-width: 0;
         box-sizing: border-box;
         flex-shrink: 0;
+        padding: 1rem;
+        display: flex;
+    }
+    
+    .contact-item i {
+        font-size: 1.2rem;
+        width: 24px;
+        flex-shrink: 0;
+    }
+    
+    .contact-item h3 {
+        font-size: 1rem;
+        margin-bottom: 0.2rem;
+    }
+    
+    .contact-item p {
+        font-size: 0.9rem;
     }
 
     .footer-content {
