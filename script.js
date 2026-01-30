@@ -222,6 +222,9 @@ window.addEventListener('scroll', () => {
     }
 });
 
+// Detect if device is touch-enabled (mobile)
+const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
 // Project card hover effects and click handling
 document.querySelectorAll('.project-card').forEach(card => {
     card.addEventListener('mouseenter', function() {
@@ -238,6 +241,10 @@ document.querySelectorAll('.project-card').forEach(card => {
         card.addEventListener('click', function(e) {
             // Don't navigate if clicking on a link inside the card
             if (!e.target.closest('.project-link')) {
+                // On mobile, don't navigate if clicking on the image area (let image toggle handle it)
+                if (isTouchDevice && e.target.closest('.project-image')) {
+                    return;
+                }
                 window.open(liveUrl, '_blank', 'noopener,noreferrer');
             }
         });
@@ -294,6 +301,9 @@ document.querySelectorAll('.project-img[data-project]').forEach(img => {
     const placeholder = projectImageContainer ? projectImageContainer.querySelector('.project-placeholder') : null;
     const projectCard = img.closest('.project-card');
     
+    // Track current image state (false = original, true = hover)
+    let isHoverImage = false;
+    
     // Hide placeholder if image exists and is loaded
     img.addEventListener('load', function() {
         if (placeholder && img.src && img.complete && img.naturalWidth > 0) {
@@ -320,43 +330,105 @@ document.querySelectorAll('.project-img[data-project]').forEach(img => {
     
     hoverImage.src = hoverSrc;
     
-    if (projectCard) {
-        projectCard.addEventListener('mouseenter', function() {
-            // Check if hover image exists and is loaded
-            if (hoverImageExists || (hoverImage.complete && hoverImage.naturalWidth > 0)) {
-                // Ensure placeholder stays hidden during swap
-                if (placeholder) {
-                    placeholder.classList.add('hidden');
-                }
-                // Fade out, swap image, fade in
+    // Function to swap to hover image
+    const showHoverImage = function() {
+        if (hoverImageExists || (hoverImage.complete && hoverImage.naturalWidth > 0)) {
+            if (placeholder) {
+                placeholder.classList.add('hidden');
+            }
+            if (!isHoverImage) {
                 img.style.opacity = '0';
                 setTimeout(() => {
                     img.src = hoverSrc;
-                    // Ensure placeholder stays hidden after swap
                     if (placeholder) {
                         placeholder.classList.add('hidden');
                     }
                     img.style.opacity = '1';
+                    isHoverImage = true;
                 }, 150);
             }
-        });
-        
-        projectCard.addEventListener('mouseleave', function() {
-            // Ensure placeholder stays hidden during swap
-            if (placeholder) {
-                placeholder.classList.add('hidden');
-            }
-            // Fade out, swap back, fade in
+        }
+    };
+    
+    // Function to swap back to original image
+    const showOriginalImage = function() {
+        if (placeholder) {
+            placeholder.classList.add('hidden');
+        }
+        if (isHoverImage) {
             img.style.opacity = '0';
             setTimeout(() => {
                 img.src = originalSrc;
-                // Ensure placeholder stays hidden after swap
                 if (placeholder) {
                     placeholder.classList.add('hidden');
                 }
                 img.style.opacity = '1';
+                isHoverImage = false;
             }, 150);
+        }
+    };
+    
+    // Function to toggle between images
+    const toggleImage = function() {
+        if (isHoverImage) {
+            showOriginalImage();
+        } else {
+            showHoverImage();
+        }
+    };
+    
+    if (projectCard) {
+        // Desktop hover behavior
+        projectCard.addEventListener('mouseenter', function() {
+            if (!isTouchDevice) {
+                showHoverImage();
+            }
         });
+        
+        projectCard.addEventListener('mouseleave', function() {
+            if (!isTouchDevice) {
+                showOriginalImage();
+            }
+        });
+        
+        // Mobile touch behavior - toggle image on tap
+        if (isTouchDevice && projectImageContainer) {
+            let touchStartTime = 0;
+            let touchStartX = 0;
+            let touchStartY = 0;
+            
+            projectImageContainer.addEventListener('touchstart', function(e) {
+                touchStartTime = Date.now();
+                touchStartX = e.touches[0].clientX;
+                touchStartY = e.touches[0].clientY;
+            }, { passive: true });
+            
+            projectImageContainer.addEventListener('touchend', function(e) {
+                const touchEndTime = Date.now();
+                const touchDuration = touchEndTime - touchStartTime;
+                const touchEndX = e.changedTouches[0].clientX;
+                const touchEndY = e.changedTouches[0].clientY;
+                const deltaX = Math.abs(touchEndX - touchStartX);
+                const deltaY = Math.abs(touchEndY - touchStartY);
+                
+                // Only toggle if it's a quick tap (not a swipe or long press)
+                if (touchDuration < 300 && deltaX < 10 && deltaY < 10) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    toggleImage();
+                }
+            });
+            
+            // Also handle click for devices that support both touch and mouse
+            projectImageContainer.addEventListener('click', function(e) {
+                // Only handle if it's from a touch device and not from a link
+                if (isTouchDevice && !e.target.closest('.project-link')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    toggleImage();
+                }
+            });
+        }
     }
 });
 
