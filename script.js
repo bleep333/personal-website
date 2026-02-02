@@ -254,12 +254,14 @@ document.addEventListener('DOMContentLoaded', () => {
 // Parallax effect for hero section
 window.addEventListener('scroll', () => {
     const scrolled = window.pageYOffset;
-    const hero = document.querySelector('.hero');
-    if (hero) {
-        const rate = scrolled * -0.5;
-        hero.style.transform = `translateY(${rate}px)`;
-    }
-});
+  
+    const stars = document.querySelector('.hero-stars');
+    const clouds = document.querySelector('.hero-clouds');
+  
+    // subtle parallax (small values)
+    if (stars) stars.style.transform = `translateY(${scrolled * 0.15}px)`;
+    if (clouds) clouds.style.transform = `translateY(${scrolled * 0.10}px)`;
+  });
 
 // Detect if device is touch-enabled (mobile)
 const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;

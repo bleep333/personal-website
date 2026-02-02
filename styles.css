@@ -326,6 +326,8 @@ body.dark-mode .hero-stars {
     z-index: 0;
 }
 
+.hero-stars, .hero-clouds { will-change: transform; }
+
 body:not(.dark-mode) .hero-clouds {
     display: block;
 }
