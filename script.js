@@ -741,6 +741,13 @@ window.addEventListener('scroll', throttledScrollHandler);
         
         // Set CSS variable for spine progress
         scrollSpine.style.setProperty('--spine-progress', scrollProgress);
+
+        // Update marker position to follow the progress fill
+        const marker = scrollSpine.querySelector('.spine-marker');
+        if (marker) {
+            // Position marker at the bottom edge of the fill (progress * 100%)
+            marker.style.top = `${scrollProgress * 100}%`;
+        }
         
         ticking = false;
     }
