@@ -719,3 +719,45 @@ const throttledScrollHandler = throttle(() => {
 }, 10);
 
 window.addEventListener('scroll', throttledScrollHandler);
+
+// Scroll Progress Spine
+(function() {
+    const scrollSpine = document.getElementById('scroll-spine');
+    if (!scrollSpine) return;
+    
+    let ticking = false;
+    
+    function updateScrollSpine() {
+        const windowHeight = window.innerHeight;
+        const documentHeight = document.documentElement.scrollHeight;
+        const scrollTop = window.scrollY || document.documentElement.scrollTop;
+        
+        // Calculate scroll progress (0 to 1)
+        const scrollableHeight = documentHeight - windowHeight;
+        let scrollProgress = scrollableHeight > 0 ? scrollTop / scrollableHeight : 0;
+        
+        // Clamp progress between 0 and 1
+        scrollProgress = Math.min(1, Math.max(0, scrollProgress));
+        
+        // Set CSS variable for spine progress
+        scrollSpine.style.setProperty('--spine-progress', scrollProgress);
+        
+        ticking = false;
+    }
+    
+    function requestTick() {
+        if (!ticking) {
+            window.requestAnimationFrame(updateScrollSpine);
+            ticking = true;
+        }
+    }
+    
+    // Update on scroll
+    window.addEventListener('scroll', requestTick, { passive: true });
+    
+    // Update on resize (viewport height changes)
+    window.addEventListener('resize', requestTick, { passive: true });
+    
+    // Initial update
+    updateScrollSpine();
+})();
