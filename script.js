@@ -17,6 +17,12 @@ function toggleDarkMode() {
     body.classList.toggle('dark-mode');
     const isDarkMode = body.classList.contains('dark-mode');
     localStorage.setItem('darkMode', isDarkMode);
+    // Clear navbar inline styles when switching to light mode so CSS rules apply
+    const navbar = document.querySelector('.navbar');
+    if (!isDarkMode && navbar) {
+        navbar.style.background = '';
+        navbar.style.boxShadow = '';
+    }
 }
 
 // Initialize dark mode on page load
@@ -57,15 +63,21 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// Navbar background change on scroll
+// Navbar background change on scroll (dark mode only; light mode uses CSS)
 window.addEventListener('scroll', () => {
     const navbar = document.querySelector('.navbar');
-    if (window.scrollY > 50) {
-        navbar.style.background = 'rgba(17, 24, 39, 0.98)';
-        navbar.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
+    const isDark = document.body.classList.contains('dark-mode');
+    if (isDark) {
+        if (window.scrollY > 50) {
+            navbar.style.background = 'rgba(17, 24, 39, 0.98)';
+            navbar.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
+        } else {
+            navbar.style.background = 'rgba(17, 24, 39, 0.95)';
+            navbar.style.boxShadow = 'none';
+        }
     } else {
-        navbar.style.background = 'rgba(17, 24, 39, 0.95)';
-        navbar.style.boxShadow = 'none';
+        navbar.style.background = '';
+        navbar.style.boxShadow = '';
     }
 });
 
@@ -676,16 +688,22 @@ function throttle(func, wait) {
 
 // Apply throttling to scroll events
 const throttledScrollHandler = throttle(() => {
-    // Navbar background change
+    // Navbar background change (dark mode only; light mode uses CSS)
     const navbar = document.querySelector('.navbar');
-    if (window.scrollY > 50) {
-        navbar.style.background = 'rgba(17, 24, 39, 0.98)';
-        navbar.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
+    const isDark = document.body.classList.contains('dark-mode');
+    if (isDark) {
+        if (window.scrollY > 50) {
+            navbar.style.background = 'rgba(17, 24, 39, 0.98)';
+            navbar.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
+        } else {
+            navbar.style.background = 'rgba(17, 24, 39, 0.95)';
+            navbar.style.boxShadow = 'none';
+        }
     } else {
-        navbar.style.background = 'rgba(17, 24, 39, 0.95)';
-        navbar.style.boxShadow = 'none';
+        navbar.style.background = '';
+        navbar.style.boxShadow = '';
     }
-    
+
     // Active navigation link highlighting
     const navLinks = document.querySelectorAll('.nav-link');
     const current = getActiveSection();
