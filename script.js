@@ -2,13 +2,14 @@
 const darkModeToggle = document.getElementById('dark-mode-toggle');
 const body = document.body;
 
-// Check for saved dark mode preference or default to light mode
+// Check for saved dark mode preference or default to dark mode
 function loadDarkModePreference() {
     const darkMode = localStorage.getItem('darkMode');
-    if (darkMode === 'true') {
-        body.classList.add('dark-mode');
-    } else {
+    if (darkMode === 'false') {
         body.classList.remove('dark-mode');
+    } else {
+        // Default to dark mode if no preference is saved
+        body.classList.add('dark-mode');
     }
 }
 
