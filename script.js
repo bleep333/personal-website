@@ -904,3 +904,164 @@ window.addEventListener('scroll', throttledScrollHandler);
     // Initial update
     updateSectionFades();
 })();
+
+// Cursor Glow Effect - Contained within tiles (Dark Mode Only)
+(function() {
+    const tileSelectors = '.skill-item, .certification-item, .project-card, .contact-item';
+    let isDarkMode = document.body.classList.contains('dark-mode');
+    
+    // Initialize glow elements for existing tiles
+    function initializeTileGlows() {
+        document.querySelectorAll(tileSelectors).forEach(tile => {
+            // Skip if glow already exists
+            if (tile.querySelector('.tile-glow')) return;
+            
+            // Create glow element
+            const glow = document.createElement('div');
+            glow.className = 'tile-glow';
+            tile.appendChild(glow);
+            
+            // Initialize CSS variables
+            tile.style.setProperty('--glow-x', '50%');
+            tile.style.setProperty('--glow-y', '50%');
+            tile.style.setProperty('--glow-opacity', '0');
+        });
+    }
+    
+    // Update glow position for a tile based on mouse position
+    function updateTileGlow(tile, mouseX, mouseY) {
+        if (!isDarkMode) return;
+        
+        const rect = tile.getBoundingClientRect();
+        const relativeX = mouseX - rect.left;
+        const relativeY = mouseY - rect.top;
+        
+        // Calculate percentage position within tile
+        const percentX = (relativeX / rect.width) * 100;
+        const percentY = (relativeY / rect.height) * 100;
+        
+        // Smooth interpolation for natural following
+        const currentX = parseFloat(tile.style.getPropertyValue('--glow-x') || '50');
+        const currentY = parseFloat(tile.style.getPropertyValue('--glow-y') || '50');
+        const currentOpacity = parseFloat(tile.style.getPropertyValue('--glow-opacity') || '0');
+        
+        const newX = currentX + (percentX - currentX) * 0.15;
+        const newY = currentY + (percentY - currentY) * 0.15;
+        const newOpacity = currentOpacity + (1 - currentOpacity) * 0.2;
+        
+        tile.style.setProperty('--glow-x', `${newX}%`);
+        tile.style.setProperty('--glow-y', `${newY}%`);
+        tile.style.setProperty('--glow-opacity', newOpacity.toString());
+    }
+    
+    // Hide glow for a tile (returns true if still fading, false if fully hidden)
+    function fadeOutTileGlow(tile) {
+        const currentOpacity = parseFloat(tile.style.getPropertyValue('--glow-opacity') || '0');
+        if (currentOpacity <= 0) return false;
+        
+        const fadeSpeed = 0.15; // Faster fade out
+        const newOpacity = Math.max(0, currentOpacity - (currentOpacity * fadeSpeed));
+        tile.style.setProperty('--glow-opacity', newOpacity.toString());
+        
+        return newOpacity > 0.01; // Return true if still visible
+    }
+    
+    // Animation loop for smooth glow movement
+    let animationFrameId = null;
+    const activeTiles = new Map();
+    const fadingTiles = new Set();
+    
+    function animateGlows() {
+        // Update active tiles (mouse is over them)
+        activeTiles.forEach((mousePos, tile) => {
+            if (isDarkMode) {
+                updateTileGlow(tile, mousePos.x, mousePos.y);
+                fadingTiles.delete(tile); // Remove from fading set if active again
+            } else {
+                // If not dark mode, fade out active tiles
+                if (!fadeOutTileGlow(tile)) {
+                    activeTiles.delete(tile);
+                } else {
+                    fadingTiles.add(tile);
+                }
+            }
+        });
+        
+        // Continue fading out tiles that are no longer active
+        fadingTiles.forEach(tile => {
+            if (!fadeOutTileGlow(tile)) {
+                fadingTiles.delete(tile);
+            }
+        });
+        
+        animationFrameId = requestAnimationFrame(animateGlows);
+    }
+    
+    // Start animation loop
+    animateGlows();
+    
+    // Track mouse movement over tiles
+    document.addEventListener('mousemove', (e) => {
+        const tile = e.target.closest(tileSelectors);
+        
+        if (tile && isDarkMode) {
+            activeTiles.set(tile, { x: e.clientX, y: e.clientY });
+            fadingTiles.delete(tile); // Remove from fading set
+        } else {
+            // Remove tiles that are no longer hovered and add to fading set
+            activeTiles.forEach((_, t) => {
+                if (!t.contains(e.target)) {
+                    activeTiles.delete(t);
+                    fadingTiles.add(t);
+                }
+            });
+        }
+    }, { passive: true });
+    
+    // Handle mouse leave on tiles
+    document.querySelectorAll(tileSelectors).forEach(tile => {
+        tile.addEventListener('mouseleave', () => {
+            activeTiles.delete(tile);
+            fadingTiles.add(tile); // Add to fading set
+        }, { passive: true });
+    });
+    
+    // Hide all glows when mouse leaves window
+    document.addEventListener('mouseleave', () => {
+        // Move all active tiles to fading set
+        activeTiles.forEach((_, tile) => {
+            fadingTiles.add(tile);
+        });
+        activeTiles.clear();
+    }, { passive: true });
+    
+    // Initialize on page load
+    initializeTileGlows();
+    
+    // Watch for dark mode changes
+    const observer = new MutationObserver(() => {
+        const wasDarkMode = isDarkMode;
+        isDarkMode = document.body.classList.contains('dark-mode');
+        
+        if (!isDarkMode) {
+            // Hide all glows when switching to light mode
+            document.querySelectorAll(tileSelectors).forEach(hideTileGlow);
+            activeTiles.clear();
+        }
+    });
+    
+    observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class']
+    });
+    
+    // Watch for dynamically added tiles
+    const tileObserver = new MutationObserver(() => {
+        initializeTileGlows();
+    });
+    
+    tileObserver.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+})();

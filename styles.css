@@ -1959,3 +1959,75 @@ body.dark-mode #scroll-spine .spine-marker::before {
     transform: translateX(5px) translateY(-2px);
     opacity: 0.9;
 }
+
+/* Cursor Glow Effect - Contained within tiles (Dark Mode Only) */
+.skill-item,
+.certification-item,
+.project-card,
+.contact-item {
+    overflow: hidden;
+    --glow-x: 50%;
+    --glow-y: 50%;
+    --glow-opacity: 0;
+}
+
+/* Glow effect container - child element added via JavaScript */
+.tile-glow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 1;
+    opacity: var(--glow-opacity, 0);
+    transition: opacity 0.3s ease;
+    overflow: hidden;
+    border-radius: inherit;
+}
+
+/* Outer glow layer */
+body.dark-mode .tile-glow::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(
+        circle 200px at var(--glow-x) var(--glow-y),
+        rgba(168, 85, 247, 0.2) 0%,
+        rgba(99, 102, 241, 0.15) 25%,
+        rgba(0, 212, 255, 0.1) 40%,
+        transparent 60%
+    );
+    filter: blur(30px);
+    will-change: opacity;
+}
+
+/* Inner glow layer for more depth */
+body.dark-mode .tile-glow::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(
+        circle 120px at var(--glow-x) var(--glow-y),
+        rgba(168, 85, 247, 0.3) 0%,
+        rgba(99, 102, 241, 0.2) 30%,
+        transparent 50%
+    );
+    filter: blur(15px);
+    will-change: opacity;
+}
+
+/* Ensure tile content stays above glow */
+.skill-item > *:not(.tile-glow),
+.certification-item > *:not(.tile-glow),
+.project-card > *:not(.tile-glow),
+.contact-item > *:not(.tile-glow) {
+    position: relative;
+    z-index: 2;
+}
