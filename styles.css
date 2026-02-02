@@ -616,19 +616,6 @@ body:not(.dark-mode) .btn-secondary:hover {
     animation: slideInRight 1s ease-out;
 }
 
-.code-animation {
-    background: rgba(20, 184, 166, 0.1);
-    padding: 2rem;
-    border-radius: 10px;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(20, 184, 166, 0.2);
-}
-
-body:not(.dark-mode) .code-animation {
-    background: rgba(255, 255, 255, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.8);
-    box-shadow: 0 8px 32px rgba(37, 99, 235, 0.15);
-}
 
 .code-line {
     height: 4px;
