@@ -638,6 +638,9 @@ body:not(.dark-mode) .code-line {
 section {
     padding: 28rem 0;
     scroll-margin-top: 90px; /* Account for fixed navbar + extra spacing */
+    opacity: 1;
+    transition: opacity 0.4s ease-out;
+    will-change: opacity;
 }
 
 /* Extra scroll margin for mobile devices */

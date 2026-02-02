@@ -802,3 +802,104 @@ window.addEventListener('scroll', throttledScrollHandler);
     // Initial update
     updateScrollSpine();
 })();
+
+// Scroll-based fade effects for sections
+(function() {
+    const sections = document.querySelectorAll('section');
+    if (sections.length === 0) return;
+    
+    let ticking = false;
+    
+    function updateSectionFades() {
+        const windowHeight = window.innerHeight;
+        const scrollTop = window.scrollY || document.documentElement.scrollTop;
+        const viewportTop = scrollTop;
+        const viewportBottom = scrollTop + windowHeight;
+        
+        sections.forEach(section => {
+            const rect = section.getBoundingClientRect();
+            const sectionTop = scrollTop + rect.top;
+            const sectionBottom = sectionTop + rect.height;
+            
+            // Calculate how much of the section is visible
+            const visibleTop = Math.max(viewportTop, sectionTop);
+            const visibleBottom = Math.min(viewportBottom, sectionBottom);
+            const visibleHeight = Math.max(0, visibleBottom - visibleTop);
+            
+            // Calculate opacity based on scroll position
+            let opacity = 1;
+            
+            // If section is above viewport (scrolling up), fade it out
+            if (sectionBottom < viewportTop) {
+                // Section is completely above viewport
+                const distanceAbove = viewportTop - sectionBottom;
+                const fadeDistance = windowHeight * 1.5; // Fade over 1.5x viewport height for more dramatic effect
+                const fadeProgress = Math.min(1, distanceAbove / fadeDistance);
+                // Start from barely visible (0.1) and fade to 0
+                opacity = Math.max(0, 0.1 * (1 - fadeProgress));
+            }
+            // If section is below viewport (scrolling in from bottom), keep it invisible
+            else if (sectionTop > viewportBottom) {
+                // Section is completely below viewport - stay invisible
+                opacity = 0.1;
+            }
+            // Section is in viewport - check if it's entering or leaving
+            else {
+                // Calculate how much of section is visible
+                const sectionHeight = rect.height;
+                const visibleRatio = visibleHeight / sectionHeight;
+                
+                // If section is entering from bottom (top of section is below viewport top)
+                if (rect.top > 0) {
+                    // Calculate how much of the section has entered from the bottom
+                    // rect.top tells us how far from the top of viewport the section starts
+                    // We want to keep it invisible until it's already partially up the screen
+                    const enterThreshold = windowHeight * 0.25; // Start fading when section top is 25% up the screen
+                    
+                    if (rect.top > enterThreshold) {
+                        // Section hasn't moved up enough yet - keep invisible
+                        opacity = 0.1;
+                    } else {
+                        // Section is high enough - fade in based on position
+                        // rect.top decreases as section moves up (0 = at top of viewport)
+                        const fadeStart = enterThreshold;
+                        const fadeEnd = 0; // Fully visible when at top of viewport
+                        const fadeRange = fadeStart - fadeEnd;
+                        const fadeProgress = Math.min(1, Math.max(0, (fadeStart - rect.top) / fadeRange));
+                        opacity = Math.max(0.1, 0.1 + (0.9 * fadeProgress));
+                    }
+                }
+                // If section is leaving from top (bottom of section is above viewport bottom)
+                else if (rect.bottom < windowHeight && visibleRatio < 0.5) {
+                    const exitProgress = visibleRatio / 0.5; // 0 to 1 as it exits
+                    opacity = Math.max(0.1, 0.1 + (0.9 * exitProgress));
+                }
+                // Section is fully in viewport - fully opaque
+                else {
+                    opacity = 1;
+                }
+            }
+            
+            // Apply opacity
+            section.style.opacity = opacity;
+        });
+        
+        ticking = false;
+    }
+    
+    function requestTick() {
+        if (!ticking) {
+            window.requestAnimationFrame(updateSectionFades);
+            ticking = true;
+        }
+    }
+    
+    // Update on scroll
+    window.addEventListener('scroll', requestTick, { passive: true });
+    
+    // Update on resize
+    window.addEventListener('resize', requestTick, { passive: true });
+    
+    // Initial update
+    updateSectionFades();
+})();
