@@ -38,7 +38,31 @@ body.dark-mode .section-subtitle {
 }
 
 body.dark-mode .about {
-    background: #1e293b;
+    background: linear-gradient(
+        180deg,
+        #0f172a 0%,
+        #16223a 25%,
+        #1e293b 100%
+    );
+}
+
+.about {
+    position: relative;
+}
+
+body.dark-mode .about::before {
+    content: '';
+    position: absolute;
+    top: -60px;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: linear-gradient(
+        180deg,
+        transparent,
+        #0f172a
+    );
+    pointer-events: none;
 }
 
 body.dark-mode .about-text p {
@@ -851,7 +875,7 @@ body:not(.dark-mode) .projects {
 }
 
 .project-card {
-    background: #0000009d;
+    background: #263852;
     border-radius: 15px;
     overflow: hidden;
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
