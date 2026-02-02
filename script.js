@@ -54,11 +54,45 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         e.preventDefault();
         const target = document.querySelector(this.getAttribute('href'));
         if (target) {
-            const offsetTop = target.offsetTop - 70; // Account for fixed navbar
-            window.scrollTo({
-                top: offsetTop,
-                behavior: 'smooth'
-            });
+            // Check if mobile menu is open
+            const isMenuOpen = navMenu.classList.contains('active');
+            
+            // Function to perform the scroll
+            const performScroll = () => {
+                // Get navbar height dynamically
+                const navbar = document.querySelector('.navbar');
+                const navbarHeight = navbar ? navbar.offsetHeight : 70;
+                
+                // Try to find the section-title within the target section for better positioning
+                // This ensures we scroll to the title, not just the top of the section
+                const sectionTitle = target.querySelector('.section-title');
+                const scrollTarget = sectionTitle || target;
+                
+                // Get the position of the scroll target
+                const targetRect = scrollTarget.getBoundingClientRect();
+                const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+                const targetPosition = targetRect.top + currentScroll;
+                
+                // Calculate offset - more on mobile to account for browser chrome and better visibility
+                const isMobile = window.innerWidth <= 768 || isTouchDevice;
+                const extraOffset = isMobile ? 100 : 20; // Much larger offset on mobile
+                
+                // Calculate final scroll position
+                const scrollPosition = Math.max(0, targetPosition - navbarHeight - extraOffset);
+                
+                window.scrollTo({
+                    top: scrollPosition,
+                    behavior: 'smooth'
+                });
+            };
+            
+            // If menu is open, wait for it to close before scrolling
+            if (isMenuOpen) {
+                // Wait for menu animation to complete (300ms transition)
+                setTimeout(performScroll, 350);
+            } else {
+                performScroll();
+            }
         }
     });
 });
