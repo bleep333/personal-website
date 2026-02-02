@@ -872,6 +872,57 @@ body:not(.dark-mode) .projects {
     flex-direction: column;
     height: 100%;
     cursor: pointer;
+    position: relative;
+}
+
+/* Dark mode: glowing gradient border effect */
+body.dark-mode .project-card {
+    background: #1a1f2e;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.5),
+        0 0 0 2px rgba(0, 212, 255, 0.25);
+    position: relative;
+}
+
+body.dark-mode .project-card::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 15px;
+    background: linear-gradient(135deg, #00d4ff 0%, #5b8def 50%, #a855f7 100%);
+    opacity: 0.5;
+    transition: opacity 0.3s ease, box-shadow 0.3s ease;
+    z-index: -1;
+    pointer-events: none;
+}
+
+body.dark-mode .project-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 13px;
+    background: #1a1f2e;
+    z-index: -1;
+    pointer-events: none;
+}
+
+body.dark-mode .project-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 
+        0 25px 60px rgba(0, 212, 255, 0.3),
+        0 0 40px rgba(0, 212, 255, 0.2),
+        0 0 60px rgba(168, 85, 247, 0.15),
+        0 0 0 2px rgba(0, 212, 255, 0.6);
+}
+
+body.dark-mode .project-card:hover::before {
+    opacity: 1;
+    box-shadow: 
+        0 0 30px rgba(0, 212, 255, 0.6),
+        0 0 50px rgba(91, 141, 239, 0.4),
+        0 0 70px rgba(168, 85, 247, 0.3);
 }
 
 .project-card:hover {
@@ -965,6 +1016,10 @@ body:not(.dark-mode) .project-placeholder {
 
 .project-card:hover .project-description {
     color: #fbbe24ab;
+}
+
+body.dark-mode .project-card:hover .project-description {
+    color: #e5e7eb;
 }
 
 .project-placeholder {
@@ -1082,12 +1137,25 @@ body:not(.dark-mode) .project-placeholder {
     color: #fbbe247e;
 }
 
+body.dark-mode .project-title {
+    color: #ffffff;
+    font-weight: 700;
+}
+
+body.dark-mode .project-card:hover .project-title {
+    color: #00d4ff;
+}
 
 .project-description {
     color: #fbbe2442;
     margin-bottom: 1rem;
     line-height: 1.6;
     flex-grow: 1;
+}
+
+body.dark-mode .project-description {
+    color: #cbd5f5;
+    opacity: 0.9;
 }
 
 .project-tech {
@@ -1109,6 +1177,12 @@ body:not(.dark-mode) .project-placeholder {
     white-space: nowrap;
     flex-shrink: 0;
     margin: 0;
+}
+
+body.dark-mode .tech-tag {
+    background: rgba(0, 212, 255, 0.15);
+    color: #00d4ff;
+    border: 1px solid rgba(0, 212, 255, 0.3);
 }
 
 .project-links {
@@ -1134,6 +1208,10 @@ body:not(.dark-mode) .project-placeholder {
     z-index: 1;
 }
 
+body.dark-mode .project-link {
+    color: #ffffff;
+}
+
 .project-link::before {
     content: '';
     position: absolute;
@@ -1148,12 +1226,65 @@ body:not(.dark-mode) .project-placeholder {
     z-index: -1;
 }
 
+body.dark-mode .project-link::before {
+    background: rgba(0, 212, 255, 0.1);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* First link (Live Demo) - gradient background button */
+body.dark-mode .project-links .project-link:first-child::before {
+    background: linear-gradient(90deg, rgba(0, 212, 255, 0.2) 0%, rgba(91, 141, 239, 0.2) 100%);
+    border: 1px solid rgba(0, 212, 255, 0.4);
+}
+
+/* Only enhance border glow on card hover, keep background colors the same */
+body.dark-mode .project-card:hover .project-links .project-link:first-child::before {
+    background: linear-gradient(90deg, rgba(0, 212, 255, 0.2) 0%, rgba(91, 141, 239, 0.2) 100%);
+    border-color: rgba(0, 212, 255, 0.7);
+    box-shadow: 
+        0 0 12px rgba(0, 212, 255, 0.5),
+        0 0 20px rgba(91, 141, 239, 0.3);
+}
+
+/* Second link (Code) - outlined button with gradient border */
+body.dark-mode .project-links .project-link:last-child {
+    position: relative;
+}
+
+body.dark-mode .project-links .project-link:last-child::before {
+    background: transparent;
+    border: 1.5px solid rgba(0, 212, 255, 0.4);
+    box-shadow: 
+        0 0 8px rgba(0, 212, 255, 0.2),
+        inset 0 0 8px rgba(168, 85, 247, 0.1);
+}
+
+/* Only enhance border glow on card hover */
+body.dark-mode .project-card:hover .project-links .project-link:last-child::before {
+    border-color: rgba(168, 85, 247, 0.7);
+    box-shadow: 
+        0 0 15px rgba(0, 212, 255, 0.5),
+        0 0 25px rgba(168, 85, 247, 0.4),
+        inset 0 0 10px rgba(91, 141, 239, 0.15);
+}
+
 .project-link:hover::before {
     background: rgba(251, 191, 36, 0.2);
 }
 
+body.dark-mode .project-link:hover::before {
+    border-color: rgba(0, 212, 255, 0.5);
+}
+
 .project-card:hover .project-link {
     color: #fcd34d;
+}
+
+/* Keep text colors unchanged when hovering over card */
+body.dark-mode .project-card:hover .project-link {
+    color: #ffffff;
+    font-weight: 500;
 }
 
 /* Contact Section */
