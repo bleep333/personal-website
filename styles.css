@@ -1232,27 +1232,12 @@ body.dark-mode .project-link::before {
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* First link (Live Demo) - gradient background button */
-body.dark-mode .project-links .project-link:first-child::before {
-    background: linear-gradient(90deg, rgba(0, 212, 255, 0.2) 0%, rgba(91, 141, 239, 0.2) 100%);
-    border: 1px solid rgba(0, 212, 255, 0.4);
-}
-
-/* Only enhance border glow on card hover, keep background colors the same */
-body.dark-mode .project-card:hover .project-links .project-link:first-child::before {
-    background: linear-gradient(90deg, rgba(0, 212, 255, 0.2) 0%, rgba(91, 141, 239, 0.2) 100%);
-    border-color: rgba(0, 212, 255, 0.7);
-    box-shadow: 
-        0 0 12px rgba(0, 212, 255, 0.5),
-        0 0 20px rgba(91, 141, 239, 0.3);
-}
-
-/* Second link (Code) - outlined button with gradient border */
-body.dark-mode .project-links .project-link:last-child {
+/* First link (Code) - outlined button with gradient border */
+body.dark-mode .project-links .project-link:first-child {
     position: relative;
 }
 
-body.dark-mode .project-links .project-link:last-child::before {
+body.dark-mode .project-links .project-link:first-child::before {
     background: transparent;
     border: 1.5px solid rgba(0, 212, 255, 0.4);
     box-shadow: 
@@ -1260,13 +1245,28 @@ body.dark-mode .project-links .project-link:last-child::before {
         inset 0 0 8px rgba(168, 85, 247, 0.1);
 }
 
-/* Only enhance border glow on card hover */
-body.dark-mode .project-card:hover .project-links .project-link:last-child::before {
-    border-color: rgba(168, 85, 247, 0.7);
+/* Visual feedback only on Code button hover */
+body.dark-mode .project-links .project-link:first-child:hover::before {
+    background: rgba(0, 212, 255, 0.1);
+    border-color: rgba(0, 212, 255, 0.7);
     box-shadow: 
-        0 0 15px rgba(0, 212, 255, 0.5),
-        0 0 25px rgba(168, 85, 247, 0.4),
-        inset 0 0 10px rgba(91, 141, 239, 0.15);
+        0 0 15px rgba(0, 212, 255, 0.6),
+        0 0 25px rgba(91, 141, 239, 0.4),
+        inset 0 0 12px rgba(0, 212, 255, 0.15);
+}
+
+/* Second link (Live Demo) - gradient background button */
+body.dark-mode .project-links .project-link:last-child::before {
+    background: linear-gradient(90deg, rgba(0, 212, 255, 0.2) 0%, rgba(91, 141, 239, 0.2) 100%);
+    border: 1px solid rgba(0, 212, 255, 0.4);
+}
+
+/* Purple/blue gradient background on button hover (border stays unchanged) */
+body.dark-mode .project-links .project-link:last-child:hover::before {
+    background: linear-gradient(90deg, rgba(91, 141, 239, 0.4) 0%, rgba(168, 85, 247, 0.5) 100%);
+    box-shadow: 
+        0 0 12px rgba(0, 212, 255, 0.5),
+        0 0 20px rgba(91, 141, 239, 0.3);
 }
 
 .project-link:hover::before {
