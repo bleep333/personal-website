@@ -1551,7 +1551,7 @@ body.dark-mode ::-webkit-scrollbar-thumb:hover {
 #scroll-spine {
     position: fixed;
     left: 16px;
-    top: 0;
+    top: 70px;
     bottom: 0;
     width: 2px;
     z-index: 9999;
