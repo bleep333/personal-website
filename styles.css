@@ -288,7 +288,9 @@ body.dark-mode .dark-mode-toggle #moon-icon {
 .hero {
     min-height: 100vh;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 140px; /* Navbar height + spacing so first line is fully visible */
     position: relative;
     overflow: hidden;
     background:
