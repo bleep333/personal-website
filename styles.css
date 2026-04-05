@@ -523,16 +523,16 @@ body:not(.dark-mode) .hero-clouds {
     -webkit-text-fill-color: transparent;
     background-clip: text;
     position: relative;
-    filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.5)) drop-shadow(0 0 15px rgba(99, 102, 241, 0.3));
+    filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.5))
+            drop-shadow(0 0 15px rgba(99, 102, 241, 0.3));
 }
 
 body:not(.dark-mode) .highlight {
-    color: #d97706;
-    background: none;
-    -webkit-text-fill-color: #4338ca;
-    color: #4338ca;
+    background: linear-gradient(135deg, #4338ca 0%, #6366f1 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     filter: none;
-    text-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
 }
 
 .hero-subtitle {
