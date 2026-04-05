@@ -528,6 +528,10 @@ body:not(.dark-mode) .hero-clouds {
 
 body:not(.dark-mode) .highlight {
     color: #d97706;
+    background: none;
+    -webkit-text-fill-color: #4338ca;
+    color: #4338ca;
+    filter: none;
     text-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
 }
 
