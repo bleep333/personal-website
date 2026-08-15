@@ -1469,6 +1469,10 @@ body:not(.dark-mode) .contact {
     transform: translateY(-5px);
 }
 
+.contact-item--location {
+    min-width: 280px;
+}
+
 .contact-item i {
     font-size: 1.5rem;
     color: #60a5fa;
@@ -1782,6 +1786,10 @@ body:not(.dark-mode) .social-link:hover {
         flex-shrink: 0;
         padding: 1rem;
         display: flex;
+    }
+
+    .contact-item--location {
+        min-width: 0;
     }
     
     .contact-item i {
